@@ -49,6 +49,7 @@ namespace Practice_8_WithMethodsGame
                 switch(room)
                 {
                     case "Монстр":
+                        Console.WriteLine("Code is working");
                         break;
                     case "Ловушка":
                         break;
