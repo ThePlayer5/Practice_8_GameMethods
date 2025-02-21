@@ -8,9 +8,10 @@ namespace Practice_8_WithMethodsGame
 {
     internal class Program
     {
+        Random Random = new Random();
         static void Main(string[] args)
         {
-            Random random = new Random();
+            //Random random = new Random();
             string[] dungeonMap = { "Монстр", "Ловушка", "Сундук", "Торговец", "Пустая комната", "Босс" };
 
             InitializeGame();
@@ -22,7 +23,7 @@ namespace Practice_8_WithMethodsGame
         }
         public static void InitializeGame()
         {
-            Random random = new Random();
+            //Random random = new Random();
             int pHP = 100;
             int maxHP = 100;
             int gold = 10;
@@ -30,8 +31,8 @@ namespace Practice_8_WithMethodsGame
             int arrow = 5;
             Dictionary<string, int> weapon = new Dictionary<string, int>()
             {
-                { "меч", random.Next(10, 21) },
-                { "лук", random.Next(5, 16) }
+                { "меч", Random.Next(10, 21) },
+                { "лук", Random.Next(5, 16) }
             };
         }
         public static void StartGame()
@@ -40,7 +41,7 @@ namespace Practice_8_WithMethodsGame
         }
         public static void ProcessRoom(int roomNumber)
         {
-            Random random = new Random();
+            //Random random = new Random();
             string[] dungeonMap = { "Монстр", "Ловушка", "Обычный сундук", "Проклятый сундук", "Торговец", "Алтарь усиления", "Темный маг", "Событие", "Финальная комната" };
             for (int i = 0; i < 15; i++)
             {
