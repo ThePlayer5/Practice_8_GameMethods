@@ -8,14 +8,14 @@ namespace Practice_8_WithMethodsGame
 {
     internal class Program
     {
-        Random Random = new Random();
+        static Random random = new Random();
         static void Main(string[] args)
         {
-            //Random random = new Random();
-            string[] dungeonMap = { "Монстр", "Ловушка", "Сундук", "Торговец", "Пустая комната", "Босс" };
+            int roomNumber = 0;
 
             InitializeGame();
             StartGame();
+            ProcessRoom(roomNumber);
 
 
             Console.ReadKey();
@@ -31,8 +31,8 @@ namespace Practice_8_WithMethodsGame
             int arrow = 5;
             Dictionary<string, int> weapon = new Dictionary<string, int>()
             {
-                { "меч", Random.Next(10, 21) },
-                { "лук", Random.Next(5, 16) }
+                { "меч", random.Next(10, 21) },
+                { "лук", random.Next(5, 16) }
             };
         }
         public static void StartGame()
