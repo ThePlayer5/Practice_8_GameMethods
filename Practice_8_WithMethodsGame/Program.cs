@@ -23,12 +23,11 @@ namespace Practice_8_WithMethodsGame
         }
         public static void InitializeGame()
         {
-            //Random random = new Random();
             int pHP = 100;
             int maxHP = 100;
             int gold = 10;
             int potion = 2;
-            int arrow = 5;
+            int arrows = 5;
             Dictionary<string, int> weapon = new Dictionary<string, int>()
             {
                 { "меч", random.Next(10, 21) },
@@ -37,20 +36,22 @@ namespace Practice_8_WithMethodsGame
         }
         public static void StartGame()
         {
-            Console.Write("Добро пожаловать странник!");
+            Console.WriteLine("Добро пожаловать странник!");
         }
         public static void ProcessRoom(int roomNumber)
         {
-            //Random random = new Random();
+            int monsterHP = 0;
+            int monsterAttack = 0;
+            Console.WriteLine("Странник попадает в комнату с...");
             string[] dungeonMap = { "Монстр", "Ловушка", "Обычный сундук", "Проклятый сундук", "Торговец", "Алтарь усиления", "Темный маг", "Событие", "Финальная комната" };
             for (int i = 0; i < 15; i++)
             {
-                int randomRoom = random.Next(0, dungeonMap.Length);
-                string room = dungeonMap[randomRoom];
+                roomNumber = random.Next(0, dungeonMap.Length);
+                string room = dungeonMap[roomNumber];
                 switch(room)
                 {
                     case "Монстр":
-                        Console.WriteLine("Code is working");
+                        FightMonster(monsterHP, monsterAttack);
                         break;
                     case "Ловушка":
                         break;
@@ -67,6 +68,54 @@ namespace Practice_8_WithMethodsGame
                     case "Событие":
                         break;
                 }
+            }
+        }
+        public static void FightMonster(int monsterHP, int monsterAttack)
+        {
+            monsterHP = random.Next(20, 51);
+            int pHP = 100;
+            int arrows = 5;
+            Dictionary<string, int> weapon = new Dictionary<string, int>()
+            {
+                { "меч", random.Next(10, 21) },
+                { "лук", random.Next(5, 16) }
+            };
+            Console.WriteLine("\nС монстром!");
+            while (monsterHP > 0 && pHP > 0)
+            {
+                Console.WriteLine($"У монстра {monsterHP} HP");
+                Console.Write("Выберите оружие: 'меч' или 'лук': ");
+                var chooseWeapon = Console.ReadLine();
+                if (chooseWeapon == "меч")
+                {
+                    monsterHP -= weapon["меч"];
+                    monsterAttack = random.Next(5, 16);
+                    pHP -= monsterAttack;
+                }
+                else if (chooseWeapon == "лук")
+                {
+                    if (arrows <= 0)
+                    {
+                        Console.WriteLine("В колчане нет стрел! Лук использовать нельзя!");
+                    }
+                    else
+                    {
+                        arrows--;
+                        monsterHP -= weapon["лук"];
+                        monsterAttack = random.Next(5, 16);
+                        pHP -= monsterAttack;
+                    }
+                }
+                else Console.WriteLine("Такого оружия у вас нет!");
+                Console.WriteLine($"Монстр наносит ответный удар: {monsterAttack}");
+                Console.WriteLine($"\nУ играка {pHP} HP");
+            }
+            if (pHP > 0)
+                Console.WriteLine("Победа! Монстр повержен!");
+            else
+            {
+                Console.WriteLine("Вы погибли.");
+                int i = 100;
             }
         }
     }
