@@ -23,7 +23,7 @@ namespace Practice_8_WithMethodsGame
         }
         public static int InitializeGame()
         {
-            int pHP = 10;
+            int pHP = 100;
             int maxHP = 100;
             int gold = 10;
             int potion = 2;
@@ -39,7 +39,7 @@ namespace Practice_8_WithMethodsGame
         {
             Console.WriteLine("Добро пожаловать странник!");
         }
-        public static int ProcessRoom()
+        public static void ProcessRoom()
         {
             int pHP = InitializeGame();
             int monsterHP = 0;
@@ -54,11 +54,16 @@ namespace Practice_8_WithMethodsGame
                 {
                     case "Монстр":
                         FightMonster(monsterHP, monsterAttack);
-                        pHP = FightMonster(monsterHP, monsterAttack);
+                        //pHP = FightMonster(monsterHP, monsterAttack);
                         break;
                     case "Ловушка":
+                        Console.WriteLine("\nС ловушкой!");
+                        pHP = Trap();
+                        Console.WriteLine($"У играка {pHP} HP");
                         break;
                     case "Обычный сундук":
+                        Console.WriteLine("\nС сундуком!");
+
                         break;
                     case "Проклятый сундук":
                         break;
@@ -73,12 +78,11 @@ namespace Practice_8_WithMethodsGame
                 }
                 //maxHP = pHP;
             }
-            return pHP;
         }
         public static int FightMonster(int monsterHP, int monsterAttack)
         {
             monsterHP = random.Next(20, 51);
-            int pHP = ProcessRoom();
+            int pHP = InitializeGame();
             int arrows = 5;
             Dictionary<string, int> weapon = new Dictionary<string, int>()
             {
@@ -123,6 +127,51 @@ namespace Practice_8_WithMethodsGame
                 int i = 100;
             }
             return pHP;
+        }
+        public static int Trap()
+        {
+            int pHP = InitializeGame();
+            pHP -= random.Next(5, 21);
+            return pHP;
+        }
+        public static void Chest()
+        {
+            string answer1 = "4";
+            bool corranswer = true;
+            Console.WriteLine("Чтобы открыть сундук, игрок должен решить математическую загадку: 2 + 2");
+            while (corranswer)
+            {
+                Console.Write("Ваш ответ: ");
+                var answer = Console.ReadLine();
+                if (answer == answer1)
+                {
+                    Console.WriteLine("Аааааайй, ТИГР! Лови лут!");
+                    int value = random.Next(0, loot.Length - 1);
+                    string item = loot[value];
+                    if (item == "Зелье")
+                    {
+                        Console.WriteLine(inventory.Length);
+                        Console.WriteLine(potion);
+                        if (inventory.Length <= 0)
+                        {
+                            Console.WriteLine("Ваш инвентарь переполнен!");
+                        }
+                        else
+                        {
+                            inventory[potion] = 1;
+                            potion--;
+                        }
+                    }
+                    else if (item == "Золото")
+                    {
+                        golds += random.Next(10, 26);
+                    }
+                    else arrows += 3;
+                    corranswer = false;
+                }
+                else Console.WriteLine("Неправильно, попробуй ещё раз!");
+            }
+            Console.WriteLine($"Зелий: {potion}\nЗолото: {golds}\nСтрелы: {arrows}");
         }
     }
 }
