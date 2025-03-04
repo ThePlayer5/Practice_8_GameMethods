@@ -9,7 +9,11 @@ namespace Practice_8_WithMethodsGame
     internal class Program
     {
         static Random random = new Random();
-        static int pHP = 100;
+        static int pHP = PlayerHP();
+        static int maxHP = MaxPlayerHP();
+        static int gold = Gold();
+        static int potion = Potion();
+        static int arrows = Arrows();
         static void Main(string[] args)
         {
             int roomNumber = 0;
@@ -58,7 +62,7 @@ namespace Practice_8_WithMethodsGame
             string[] dungeonMap = { "Монстр", "Ловушка", "Обычный сундук", "Проклятый сундук", "Торговец", "Алтарь усиления", "Темный маг", "Событие", "Финальная комната" };
             for (int i = 0; i < 15; i++)
             {
-                roomNumber = random.Next(0, 2); // dungeonMap.Length
+                roomNumber = random.Next(0, 4); // dungeonMap.Length
                 string room = dungeonMap[roomNumber];
                 switch (room)
                 {
@@ -69,8 +73,10 @@ namespace Practice_8_WithMethodsGame
                         Trap();
                         break;
                     case "Обычный сундук":
+                        Chest();
                         break;
                     case "Проклятый сундук":
+                        CursedChest();
                         break;
                     case "Торговец":
                         break;
@@ -81,19 +87,22 @@ namespace Practice_8_WithMethodsGame
                     case "Событие":
                         break;
                 }
+                if (pHP <= 0)
+                {
+                    Console.WriteLine("Вы погибли");
+                    i = 100;
+                }
             }
         }
-        public static int FightMonster(int monsterHP, int monsterAttack)
+        public static void FightMonster(int monsterHP, int monsterAttack)
         {
-            monsterHP = random.Next(20, 51);
-            //int pHP = PlayerHP();
-            int arrows = Arrows();
-            Dictionary<string, int> weapon = new Dictionary<string, int>()
-    {
-        { "меч", random.Next(10, 21) },
-        { "лук", random.Next(5, 16) }
-    };
             Console.WriteLine("\nС монстром!");
+            monsterHP = random.Next(20, 51);
+            Dictionary<string, int> weapon = new Dictionary<string, int>()
+            {
+                { "меч", random.Next(10, 21) },
+                { "лук", random.Next(5, 16) }
+            };
             while (monsterHP > 0 && pHP > 0)
             {
                 Console.WriteLine($"\nУ играка {pHP} HP");
@@ -125,18 +134,9 @@ namespace Practice_8_WithMethodsGame
             }
             if (pHP > 0)
                 Console.WriteLine("Победа! Монстр повержен!");
-            else
-            {
-                Console.WriteLine("Вы погибли.");
-                int i = 100;
-            }
-            return pHP;
         }
         public static void Trap()
         {
-            int monsterHP = 0;
-            int monsterAttack = 0;
-            //int pHP = FightMonster(monsterHP, monsterAttack);
             Console.WriteLine("\nС ловушкой!");
             int fall = random.Next(2);
             if (fall == 1)
@@ -146,11 +146,48 @@ namespace Practice_8_WithMethodsGame
             }
             else Console.WriteLine("Фух! Ловушка давно устарела и не работает.");
             Console.WriteLine($"У играка {pHP} HP");
-            if (pHP < 0)
+        }
+        public static void Chest()
+        {
+            Console.WriteLine("\nС сундуком!");
+            var correctAnswer = "20";
+            bool cycleAnswer = true;
+            Console.WriteLine("Чтобы открыть сундук, игрок должен решить математическую загадку: 10 * 2");
+            while (cycleAnswer)
             {
-                Console.WriteLine("Вы погибли.");
-                int i = 100;
+                Console.Write("Ваш ответ: ");
+                var userAnswer = Console.ReadLine();
+                if (userAnswer == correctAnswer)
+                {
+                    Console.WriteLine("Аааааайй, ТИГР! Лови лут!");
+                    int value = random.Next(0, 3);
+                    if (value == 0)
+                    {
+                        gold += random.Next(10, 26);
+                    }
+                    else if (value == 1)
+                    {
+                        potion += random.Next(1, 3);
+                    }
+                    else arrows += random.Next(3, 6);
+                    cycleAnswer = false;
+                }
+                else Console.WriteLine("Неправильно, попробуй ещё раз!");
             }
+            Console.WriteLine($"Золото: {gold}\nЗелий: {potion}\nСтрелы: {arrows}");
+        }
+        public static void CursedChest()
+        {
+            Console.WriteLine("\nС проклятым сундуком!");
+            gold += random.Next(10, 26);
+            Console.WriteLine($"У игрока {gold} золота");
+            int fallChance = random.Next(0, 2);
+            if (fallChance == 1)
+            {
+                int maxHPFall = maxHP - 10;
+                Console.WriteLine($"Но, сундук наносит {maxHPFall} урона и у игрока теперь {maxHP} максимального HP");
+            }
+            else Console.WriteLine("Сундук - лох и ничего не смог сделать");
         }
     }
 }

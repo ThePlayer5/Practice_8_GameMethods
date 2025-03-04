@@ -235,9 +235,6 @@ namespace Attempt1
 
 
 
-
-
-
             //int pHP = 0;
             //Fight();
 
