@@ -184,10 +184,45 @@ namespace Practice_8_WithMethodsGame
             int fallChance = random.Next(0, 2);
             if (fallChance == 1)
             {
-                int maxHPFall = maxHP - 10;
-                Console.WriteLine($"Но, сундук наносит {maxHPFall} урона и у игрока теперь {maxHP} максимального HP");
+                maxHP -= 10;
+                if (pHP % 10 == 0) pHP = maxHP;
+                Console.WriteLine($"Но, сундук наносит {10} урона и у игрока теперь {maxHP} максимального HP");
             }
             else Console.WriteLine("Сундук - лох и ничего не смог сделать");
+        }
+        public static void Trader()
+        {
+            Console.WriteLine("\nС торговецем!");
+            Console.WriteLine("Добро пожаловать странник, купи зелье для регенерации! Пж");
+            Console.WriteLine("Что хотите купить?\nЗелье - 10 золота\n3 Стрелы - 5 золота: ");
+            string item = Console.ReadLine();
+            if (item == "Зелье")
+            {
+                if (gold < 10) Console.WriteLine("У вас недостаточно золота");
+                gold -= 10;
+                potion += 1;
+            }
+            if (item == "Стрелы")
+            {
+                gold -= 5;
+                arrows += 3;
+            }
+
+            //if (golds == 30)
+            //{
+            //    if (inventory.Length > 5)
+            //    {
+            //        Console.WriteLine("Ваш инвентарь переполнен!");
+            //    }
+            //    else
+            //    {
+            //        Console.WriteLine("Спасибо, странник, что купил мой товар, удачного пути!");
+            //        potion++;
+            //        golds -= 30;
+            //    }
+            //    Console.WriteLine($"Зелий: {potion}\nЗолото: {golds}\nСтрелы: {arrows}");
+            //}
+            else Console.WriteLine("Ууууу, у тебя даже денег нету... Иди отсюда, БОМЖАРА!");
         }
     }
 }
