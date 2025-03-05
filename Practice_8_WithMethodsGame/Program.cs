@@ -185,7 +185,7 @@ namespace Practice_8_WithMethodsGame
             if (fallChance == 1)
             {
                 maxHP -= 10;
-                if (pHP % 10 == 0) pHP = maxHP;
+                if (pHP > maxHP) pHP = maxHP;
                 Console.WriteLine($"Но, сундук наносит {10} урона и у игрока теперь {maxHP} максимального HP");
             }
             else Console.WriteLine("Сундук - лох и ничего не смог сделать");
