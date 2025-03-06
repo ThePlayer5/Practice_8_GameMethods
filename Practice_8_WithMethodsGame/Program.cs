@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,16 +15,22 @@ namespace Practice_8_WithMethodsGame
         static int gold = Gold();
         static int potion = Potion();
         static int arrows = Arrows();
+        static int swordDamage = 0;
         static void Main(string[] args)
         {
             int roomNumber = 0;
 
             StartGame();
+            ShowStats();
             ProcessRoom(roomNumber);
 
 
             Console.ReadKey();
 
+        }
+        public static void ShowStats()
+        {
+            Console.WriteLine($"\nХарактеристики игрока:\nЗдоровье: {pHP}\nМаксимальное здоровье: {maxHP}\nЗолото: {gold}\nЗелья: {potion}\nСтрелы: {arrows}\n");
         }
         public static int PlayerHP()
         {
@@ -62,7 +69,7 @@ namespace Practice_8_WithMethodsGame
             string[] dungeonMap = { "Монстр", "Ловушка", "Обычный сундук", "Проклятый сундук", "Торговец", "Алтарь усиления", "Темный маг", "Событие", "Финальная комната" };
             for (int i = 0; i < 15; i++)
             {
-                roomNumber = random.Next(0, 4); // dungeonMap.Length
+                roomNumber = random.Next(5, 7); // dungeonMap.Length
                 string room = dungeonMap[roomNumber];
                 switch (room)
                 {
@@ -79,10 +86,13 @@ namespace Practice_8_WithMethodsGame
                         CursedChest();
                         break;
                     case "Торговец":
+                        Trader();
                         break;
                     case "Алтарь усиления":
+                        Altar();
                         break;
                     case "Темный маг":
+                        DarkMage();
                         break;
                     case "Событие":
                         break;
@@ -92,6 +102,7 @@ namespace Practice_8_WithMethodsGame
                     Console.WriteLine("Вы погибли");
                     i = 100;
                 }
+                ShowStats();
             }
         }
         public static void FightMonster(int monsterHP, int monsterAttack)
@@ -100,7 +111,7 @@ namespace Practice_8_WithMethodsGame
             monsterHP = random.Next(20, 51);
             Dictionary<string, int> weapon = new Dictionary<string, int>()
             {
-                { "меч", random.Next(10, 21) },
+                { "меч", random.Next(10, 21) + swordDamage },
                 { "лук", random.Next(5, 16) }
             };
             while (monsterHP > 0 && pHP > 0)
@@ -163,13 +174,13 @@ namespace Practice_8_WithMethodsGame
                     int value = random.Next(0, 3);
                     if (value == 0)
                     {
-                        gold += random.Next(10, 26);
+                        gold += random.Next(3, 6);
                     }
                     else if (value == 1)
                     {
                         potion += random.Next(1, 3);
                     }
-                    else arrows += random.Next(3, 6);
+                    else arrows += random.Next(1, 4);
                     cycleAnswer = false;
                 }
                 else Console.WriteLine("Неправильно, попробуй ещё раз!");
@@ -179,50 +190,84 @@ namespace Practice_8_WithMethodsGame
         public static void CursedChest()
         {
             Console.WriteLine("\nС проклятым сундуком!");
-            gold += random.Next(10, 26);
+            gold += random.Next(3, 6);
             Console.WriteLine($"У игрока {gold} золота");
             int fallChance = random.Next(0, 2);
             if (fallChance == 1)
             {
                 maxHP -= 10;
                 if (pHP > maxHP) pHP = maxHP;
-                Console.WriteLine($"Но, сундук наносит {10} урона и у игрока теперь {maxHP} максимального HP");
+                Console.WriteLine($"Но, сундук наносит 10 урона и у игрока теперь {maxHP} максимального HP");
             }
             else Console.WriteLine("Сундук - лох и ничего не смог сделать");
         }
         public static void Trader()
         {
             Console.WriteLine("\nС торговецем!");
-            Console.WriteLine("Добро пожаловать странник, купи зелье для регенерации! Пж");
-            Console.WriteLine("Что хотите купить?\nЗелье - 10 золота\n3 Стрелы - 5 золота: ");
+            Console.WriteLine("Добро пожаловать странник, приобрети зелье или стрелы! Пж, у меня зп 3 золота(");
+            Console.WriteLine("Что хотите купить?\nЗелье - 10 золота\nСтрелы (3 штуки) - 5 золота: ");
             string item = Console.ReadLine();
-            if (item == "Зелье")
+            if (item == "Зелье" || item == "Зелья")
             {
                 if (gold < 10) Console.WriteLine("У вас недостаточно золота");
-                gold -= 10;
-                potion += 1;
+                else
+                {
+                    gold -= 10;
+                    potion += 1;
+                    Console.WriteLine($"Спасибо, что купил {item}, удачного пути!");
+                }
             }
-            if (item == "Стрелы")
+            else if (item == "Стрелы" || item == "Стрела")
             {
-                gold -= 5;
-                arrows += 3;
+                if (gold < 5) Console.WriteLine("У вас недостаточно золота");
+                else
+                {
+                    gold -= 5;
+                    arrows += 3;
+                    Console.WriteLine($"Спасибо, что купил {item}, удачного пути!");
+                }
             }
-
-            //if (golds == 30)
-            //{
-            //    if (inventory.Length > 5)
-            //    {
-            //        Console.WriteLine("Ваш инвентарь переполнен!");
-            //    }
-            //    else
-            //    {
-            //        Console.WriteLine("Спасибо, странник, что купил мой товар, удачного пути!");
-            //        potion++;
-            //        golds -= 30;
-            //    }
-            //    Console.WriteLine($"Зелий: {potion}\nЗолото: {golds}\nСтрелы: {arrows}");
-            //}
-            else Console.WriteLine("Ууууу, у тебя даже денег нету... Иди отсюда, БОМЖАРА!");
+        }
+        public static void Altar()
+        {
+            Console.WriteLine("\nС алтарём усиления!");
+            Console.WriteLine($"Вы можете пожертвовать 10 золота, чтобы:\n1. Увеличить урон меча на 5\n2. Восстановить 20 HP");
+            Console.Write("Что хотите увеличить?\nМеч | Здоровье: ");
+            string item = Console.ReadLine();
+            if (gold < 10) Console.WriteLine("У вас недостаточно золота");
+            else
+            {
+                gold -= 10;
+                if (item == "Меч")
+                {
+                    swordDamage += 5;
+                }
+                else if (item == "Здоровье")
+                {
+                    if ((pHP + 20) < maxHP)
+                    {
+                        pHP += 20;
+                    }
+                    else pHP = maxHP;
+                }
+            }
+        }
+        public static void DarkMage()
+        {
+            Console.WriteLine("\nС тёмным магом!");
+            Console.WriteLine("Пожертвуй 10 HP и получи 2 зелья и 5 стрел!");
+            if (pHP > 10)
+            {
+                pHP -= 10;
+                potion += 2;
+                arrows += 5;
+                Console.WriteLine("Благодарю за сделку, с тобой приятно иметь дело)");
+            }
+            else Console.WriteLine("Оу, ты на последнем издыхании... ну ладно, в следующий раз...");
+        }
+        public static void Event()
+        {
+            Console.WriteLine("\nС случайным событием!");
         }
     }
 }
