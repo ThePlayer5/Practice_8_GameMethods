@@ -23,7 +23,7 @@ namespace Practice_8_WithMethodsGame
             StartGame();
             ShowStats();
             ProcessRoom(roomNumber);
-
+            Boss();
 
             Console.ReadKey();
 
@@ -66,10 +66,10 @@ namespace Practice_8_WithMethodsGame
             int monsterHP = 0;
             int monsterAttack = 0;
             Console.WriteLine("Странник попадает в комнату с...");
-            string[] dungeonMap = { "Монстр", "Ловушка", "Обычный сундук", "Проклятый сундук", "Торговец", "Алтарь усиления", "Темный маг", "Событие", "Финальная комната" };
-            for (int i = 0; i < 15; i++)
+            string[] dungeonMap = { "Монстр", "Ловушка", "Обычный сундук", "Проклятый сундук", "Торговец", "Алтарь усиления", "Темный маг", "Событие"};
+            for (int i = 1; i <= 14; i++)
             {
-                roomNumber = random.Next(5, 7); // dungeonMap.Length
+                roomNumber = random.Next(0, dungeonMap.Length);
                 string room = dungeonMap[roomNumber];
                 switch (room)
                 {
@@ -95,7 +95,18 @@ namespace Practice_8_WithMethodsGame
                         DarkMage();
                         break;
                     case "Событие":
+                        Event();
                         break;
+                }
+                if (pHP > 0 && (pHP + 20) < maxHP)
+                {
+                    Console.Write("Вы хотите использовать зелье?: ");
+                    string answer = Console.ReadLine();
+                    if (answer == "да")
+                    {
+                        pHP += random.Next(10, 21);
+                        potion -= 1;
+                    }
                 }
                 if (pHP <= 0)
                 {
@@ -268,6 +279,127 @@ namespace Practice_8_WithMethodsGame
         public static void Event()
         {
             Console.WriteLine("\nС случайным событием!");
+            int eventChance = random.Next(0, 3);
+            if (eventChance == 0)
+            {
+                Console.Write("Решите загадку: 'Зимой и летом одним цветом, что это?': ");
+                while (true)
+                {
+                    string answer = Console.ReadLine();
+                    if (answer == "Ёлка" || answer == "ёлка" || answer == "елка")
+                    {
+                        Console.WriteLine("Верно!");
+                        int loot = random.Next(0, 3);
+                        if (loot == 0)
+                        {
+                            gold += random.Next(3, 6);
+                        }
+                        else if (loot == 1)
+                        {
+                            potion += random.Next(1, 3);
+                        }
+                        else arrows += random.Next(1, 4);
+                        break;
+                    }
+                    else Console.WriteLine("Неправильно попробуй ещё раз.");
+                }
+            }
+            else if (eventChance == 1)
+            {
+                Console.WriteLine("Вы попали в ловушку!");
+                pHP -= random.Next(5, 21);
+            }
+            else
+            {
+                Console.WriteLine("Ловите бонус!");
+                int bonus = random.Next(0, 3);
+                if (bonus == 0)
+                {
+                    gold += 3;
+                }
+                else if (bonus == 1)
+                {
+                    potion += 1;
+                }
+                else arrows += 3;
+            }
+        }
+        public static void Boss()
+        {
+            Dictionary<string, int> weapon = new Dictionary<string, int>()
+            {
+                { "меч", random.Next(10, 21) + swordDamage },
+                { "лук", random.Next(5, 16) }
+            };
+            int bossHP = 100;
+            int bossAttack = 0;
+            int bossReg = 1;
+            int bossChance;
+            Console.WriteLine("Последняя комната, БОСС!");
+            while (bossHP > 0 && pHP > 0)
+            {
+                bossReg ++;
+                bossChance = random.Next(0, 3);
+                Console.WriteLine($"\nУ играка {pHP} HP");
+                Console.WriteLine($"У босса {bossHP} HP");
+                Console.Write("Выберите оружие: 'меч' или 'лук': ");
+                var chooseWeapon = Console.ReadLine();
+                if (chooseWeapon == "меч")
+                {
+                    bossHP -= weapon["меч"];
+                    if (bossChance == 2)
+                    {
+                        bossAttack = random.Next(5, 16) * 2;
+                        pHP -= bossAttack;
+                    }
+                    else
+                    {
+                        bossAttack = random.Next(5, 16);
+                        pHP -= bossAttack;
+                    }
+                }
+                else if (chooseWeapon == "лук")
+                {
+                    if (arrows <= 0)
+                    {
+                        Console.WriteLine("В колчане нет стрел! Лук использовать нельзя!");
+                    }
+                    else
+                    {
+                        arrows--;
+                        bossHP -= weapon["лук"];
+                        if (bossChance == 2)
+                        {
+                            bossAttack = random.Next(5, 16) * 2;
+                            pHP -= bossAttack;
+                        }
+                        else
+                        {
+                            bossAttack = random.Next(5, 16);
+                            pHP -= bossAttack;
+                        }
+                    }
+                }
+                else Console.WriteLine("Такого оружия у вас нет!");
+                Console.WriteLine($"Босс наносит ответный удар: {bossAttack}");
+                if (pHP > 0 && (pHP + 20) < maxHP)
+                {
+                    Console.Write("Вы хотите использовать зелье?: ");
+                    string answer = Console.ReadLine();
+                    if (answer == "да")
+                    {
+                        pHP += random.Next(10, 21);
+                        potion -= 1;
+                    }
+                }
+                if (bossReg % 3 == 0 && bossChance == 0)
+                {
+                    bossHP += 10;
+                    Console.WriteLine("Босс востанавливает здоровье на 10 едениц");
+                }
+            }
+            if (pHP > 0) Console.WriteLine("\nПобеда! Босс повержен!");
+            else Console.WriteLine("\nВас убили");
         }
     }
 }
